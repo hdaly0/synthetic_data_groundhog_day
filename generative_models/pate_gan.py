@@ -6,6 +6,8 @@ Adapted from: https://bitbucket.org/mvdschaar/mlforhealthlabpub/src/82d7f91d46db
 """
 
 import tensorflow.compat.v1 as tf
+# PATEGAN currently disables v2 behaviour globally which stops synthesized working properly
+# Commented this out but would require more permanent fix - probably disable v2 behaviour locally not globally
 # tf.disable_v2_behavior()
 
 import numpy as np

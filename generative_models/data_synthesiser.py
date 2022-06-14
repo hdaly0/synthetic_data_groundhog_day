@@ -1,29 +1,5 @@
 """Generative models adapted from https://github.com/DataResponsibly/DataSynthesizer"""
 # Copyright <2018> <dataresponsibly.com>
-#
-# import tensorflow as tf
-# import keras
-#
-# print(tf.__version__)
-# print(keras.__version__)
-#
-# tf.compat.v1.disable_eager_execution()
-#
-# import pandas as pd
-# from synthesized import HighDimSynthesizer, MetaExtractor
-#
-# df1 = pd.read_csv(
-#     'https://raw.githubusercontent.com/synthesized-io/synthesized-notebooks/master/data/claim_prediction.csv')
-# # Extract the meta information from the dataset
-# df1_meta = MetaExtractor.extract(df=df1)
-#
-# # Construct and train the generative model
-# synth1 = HighDimSynthesizer(df1_meta)
-# print("learning starting...")
-#
-# synth1.learn(df_train=df1)
-# print("learning finished")
-# print(synth1.synthesize(100))
 
 from numpy.random import seed, laplace, choice
 from pandas import DataFrame, merge
@@ -39,13 +15,7 @@ from generative_models.generative_model import GenerativeModel
 from utils.constants import *
 from utils.logging import LOGGER
 
-import pandas as pd
 from synthesized import HighDimSynthesizer, MetaExtractor
-
-import tensorflow as tf
-# tf.compat.v1.enable_eager_execution()
-# print("TENSORFLOW: ", tf.executing_eagerly())
-# tf.config.run_functions_eagerly(True)
 
 
 class SynthesizedModel(GenerativeModel):
@@ -65,33 +35,15 @@ class SynthesizedModel(GenerativeModel):
         self.__name__ = 'SynthesizedModel'
 
     def fit(self, data):
-        # print("Not working TENSORFLOW: tf.executing_eagerly(): ", tf.executing_eagerly())
-        # df1 = pd.read_csv('https://raw.githubusercontent.com/synthesized-io/synthesized-notebooks/master/data/claim_prediction.csv')
-        # # Extract the meta information from the dataset
-        # df1_meta = MetaExtractor.extract(df=df1)
-        #
-        # # Construct and train the generative model
-        # synth1 = HighDimSynthesizer(df1_meta)
-        # synth1.learn(df_train=df1)
-        # self.model = synth1
-        ################################################################################
         print(f'Start training {self.__name__} on data of shape {data.shape}...')
         if self.trained:
             self.trained = False
             self.meta = None
             self.model = None
 
-        print("Extracting meta...")
         self.meta = MetaExtractor.extract(data)
-        # print("Extracting meta complete.")
-
-        print("Creating HighDimSynth...")
         self.model = HighDimSynthesizer(self.meta)
-        # print("Creating HighDimSynth complete.")
-
-        print("Training model...")
         self.model.learn(data, 1000)
-        # print("Training model complete.")
 
         print(f'Finished training {self.__name__}')
 

@@ -27,7 +27,6 @@ cwd = path.dirname(__file__)
 
 SEED = 42
 
-# python3 linkage_cli.py -D data/texas -RC tests/linkage/runconfig.json -O tests/linkage
 
 def main():
     argparser = ArgumentParser()
