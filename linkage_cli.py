@@ -8,6 +8,8 @@ from os import mkdir, path
 from numpy.random import choice, seed
 from argparse import ArgumentParser
 from pandas import DataFrame
+import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
 
 from utils.datagen import load_s3_data_as_df, load_local_data_as_df
 from utils.utils import json_numpy_serialzer
@@ -21,8 +23,9 @@ from feature_sets.bayes import CorrelationsFeatureSet
 from sanitisation_techniques.sanitiser import SanitiserNHS
 
 from generative_models.ctgan import CTGAN
-from generative_models.pate_gan import PATEGAN
-from generative_models.data_synthesiser import (IndependentHistogram,
+# from generative_models.pate_gan import PATEGAN
+from generative_models.data_synthesiser import (SynthesizedModel,
+                                                IndependentHistogram,
                                                 BayesianNet,
                                                 PrivBayes)
 
@@ -95,21 +98,24 @@ def main():
     gmList = []
     if 'generativeModels' in runconfig.keys():
         for gm, paramsList in runconfig['generativeModels'].items():
-            if gm == 'IndependentHistogram':
+            if gm == 'SynthesizedModel':
                 for params in paramsList:
-                    gmList.append(IndependentHistogram(metadata, *params))
+                    gmList.append(SynthesizedModel(metadata, multiprocess=False, *params))
+            elif gm == 'IndependentHistogram':
+                for params in paramsList:
+                    gmList.append(IndependentHistogram(metadata, multiprocess=False, *params))
             elif gm == 'BayesianNet':
                 for params in paramsList:
-                    gmList.append(BayesianNet(metadata, *params))
+                    gmList.append(BayesianNet(metadata, multiprocess=False, *params))
             elif gm == 'PrivBayes':
                 for params in paramsList:
-                    gmList.append(PrivBayes(metadata, *params))
+                    gmList.append(PrivBayes(metadata, multiprocess=False, *params))
             elif gm == 'CTGAN':
                 for params in paramsList:
-                    gmList.append(CTGAN(metadata, *params))
-            elif gm == 'PATEGAN':
-                for params in paramsList:
-                    gmList.append(PATEGAN(metadata, *params))
+                    gmList.append(CTGAN(metadata, multiprocess=False, *params))
+            # elif gm == 'PATEGAN':
+            #     for params in paramsList:
+            #         gmList.append(PATEGAN(metadata, multiprocess=False, *params))
             else:
                 raise ValueError(f'Unknown GM {gm}')
 

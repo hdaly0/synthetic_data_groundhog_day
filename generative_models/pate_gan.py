@@ -6,7 +6,7 @@ Adapted from: https://bitbucket.org/mvdschaar/mlforhealthlabpub/src/82d7f91d46db
 """
 
 import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+# tf.disable_v2_behavior()
 
 import numpy as np
 from pandas import DataFrame
