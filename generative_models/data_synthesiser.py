@@ -43,7 +43,7 @@ class SynthesizedModel(GenerativeModel):
 
         self.meta = MetaExtractor.extract(data)
         self.model = HighDimSynthesizer(self.meta)
-        self.model.learn(data, 1000)
+        self.model.learn(data)
 
         print(f'Finished training {self.__name__}')
 
