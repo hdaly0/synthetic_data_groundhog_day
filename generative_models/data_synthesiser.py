@@ -35,7 +35,7 @@ class SynthesizedModel(GenerativeModel):
         self.__name__ = 'SynthesizedModel'
 
     def fit(self, data):
-        print(f'Start training {self.__name__} on data of shape {data.shape}...')
+        LOGGER.debug(f'Start training {self.__name__} on data of shape {data.shape}...')
         if self.trained:
             self.trained = False
             self.meta = None
@@ -45,7 +45,7 @@ class SynthesizedModel(GenerativeModel):
         self.model = HighDimSynthesizer(self.meta)
         self.model.learn(data)
 
-        print(f'Finished training {self.__name__}')
+        LOGGER.debug(f'Finished training {self.__name__}')
 
         self.trained = True
 
