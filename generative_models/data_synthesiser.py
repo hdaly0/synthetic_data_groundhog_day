@@ -97,7 +97,7 @@ class SynthesizedDPModel(GenerativeModel):
         self.meta = None
         self.trained = False
 
-        self.__name__ = 'SynthesizedModel'
+        self.__name__ = 'SynthesizedDPModel'
 
     def fit(self, data):
         LOGGER.debug(f'Start training {self.__name__} on data of shape {data.shape}...')
