@@ -110,7 +110,6 @@ class SynthesizedDPModel(GenerativeModel):
         config.differential_privacy = True
         config.epsilon = 1.0
         config.delta = 1.0/(len(data)*2)
-        print("Delta: ", config.delta)
 
         self.meta = MetaExtractor.extract(data)
         self.model = HighDimSynthesizer(self.meta, config=config)
