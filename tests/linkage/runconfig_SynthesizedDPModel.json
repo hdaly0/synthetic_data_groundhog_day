@@ -1,0 +1,16 @@
+{
+  "nIter": 15,
+  "sizeRawA": 10000,
+  "nSynA": 10,
+  "nShadows": 10,
+  "sizeRawT": 1000,
+  "sizeSynT": 1000,
+  "nSynT": 5,
+  "nTargets": 0,
+  "Targets": ["ID26241", "ID31432", "ID27428", "ID29265", "ID14086"],
+  "generativeModels": {
+    "SynthesizedDPModel": [[]]
+  },
+  "sanitisationTechniques": {
+  }
+}

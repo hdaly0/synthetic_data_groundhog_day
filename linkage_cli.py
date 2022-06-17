@@ -25,6 +25,7 @@ from sanitisation_techniques.sanitiser import SanitiserNHS
 from generative_models.ctgan import CTGAN
 # from generative_models.pate_gan import PATEGAN
 from generative_models.data_synthesiser import (SynthesizedModel,
+                                                SynthesizedDPModel,
                                                 IndependentHistogram,
                                                 BayesianNet,
                                                 PrivBayes)
@@ -101,6 +102,9 @@ def main():
             if gm == 'SynthesizedModel':
                 for params in paramsList:
                     gmList.append(SynthesizedModel(metadata, multiprocess=False, *params))
+            elif gm == 'SynthesizedDPModel':
+                for params in paramsList:
+                    gmList.append(SynthesizedDPModel(metadata, multiprocess=False, *params))
             elif gm == 'IndependentHistogram':
                 for params in paramsList:
                     gmList.append(IndependentHistogram(metadata, multiprocess=False, *params))
