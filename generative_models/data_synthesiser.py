@@ -16,11 +16,12 @@ from utils.constants import *
 from utils.logging import LOGGER
 
 from synthesized import HighDimSynthesizer, MetaExtractor
+from synthesized.config import HighDimConfig
 
 
 class SynthesizedModel(GenerativeModel):
     """
-    A BayesianNet model using non-private GreedyBayes to learn conditional probabilities
+    Synthesized model - standard out of the box
     """
     def __init__(self, metadata, multiprocess=False):
         self.metadata = self._read_meta(metadata)
@@ -43,6 +44,76 @@ class SynthesizedModel(GenerativeModel):
 
         self.meta = MetaExtractor.extract(data)
         self.model = HighDimSynthesizer(self.meta)
+        self.model.learn(data)
+
+        LOGGER.debug(f'Finished training {self.__name__}')
+
+        self.trained = True
+
+    def generate_samples(self, nsamples):
+        LOGGER.debug(f'Generate synthetic dataset of size {nsamples}')
+        assert self.trained, "Model must be fitted to some real data first"
+        return self.model.synthesize(nsamples)
+
+    def _read_meta(self, metadata):
+        """ Read metadata from metadata file."""
+        metadict = {}
+
+        for cdict in metadata['columns']:
+            col = cdict['name']
+            coltype = cdict['type']
+
+            if coltype == FLOAT or coltype == INTEGER:
+                metadict[col] = {
+                    'type': coltype,
+                    'min': cdict['min'],
+                    'max': cdict['max']
+                }
+
+            elif coltype == CATEGORICAL or coltype == ORDINAL:
+                metadict[col] = {
+                    'type': coltype,
+                    'categories': cdict['i2s'],
+                    'size': len(cdict['i2s'])
+                }
+
+            else:
+                raise ValueError(f'Unknown data type {coltype} for attribute {col}')
+
+        return metadict
+
+
+class SynthesizedDPModel(GenerativeModel):
+    """
+    Synthesized model - Differential Privacy (DP) turned on
+    """
+    def __init__(self, metadata, multiprocess=False):
+        self.metadata = self._read_meta(metadata)
+
+        self.multiprocess = bool(multiprocess)
+        self.datatype = DataFrame
+
+        self.model = None
+        self.meta = None
+        self.trained = False
+
+        self.__name__ = 'SynthesizedModel'
+
+    def fit(self, data):
+        LOGGER.debug(f'Start training {self.__name__} on data of shape {data.shape}...')
+        if self.trained:
+            self.trained = False
+            self.meta = None
+            self.model = None
+
+        config = HighDimConfig()
+        config.differential_privacy = True
+        config.epsilon = 1.0
+        config.delta = 1.0/(len(data)*2)
+        print("Delta: ", config.delta)
+
+        self.meta = MetaExtractor.extract(data)
+        self.model = HighDimSynthesizer(self.meta, config=config)
         self.model.learn(data)
 
         LOGGER.debug(f'Finished training {self.__name__}')
