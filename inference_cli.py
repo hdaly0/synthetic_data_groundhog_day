@@ -14,8 +14,8 @@ from utils.logging import LOGGER
 from utils.constants import *
 
 from generative_models.ctgan import CTGAN
-from generative_models.data_synthesiser import IndependentHistogram, BayesianNet, PrivBayes
-from generative_models.pate_gan import PATEGAN
+from generative_models.data_synthesiser import SynthesizedModel, SynthesizedDPModel, IndependentHistogram, BayesianNet, PrivBayes
+# from generative_models.pate_gan import PATEGAN
 from sanitisation_techniques.sanitiser import SanitiserNHS
 from attack_models.reconstruction import LinRegAttack, RandForestAttack
 
@@ -79,7 +79,13 @@ def main():
     gmList = []
     if 'generativeModels' in runconfig.keys():
         for gm, paramsList in runconfig['generativeModels'].items():
-            if gm == 'IndependentHistogram':
+            if gm == 'SynthesizedModel':
+                for params in paramsList:
+                    gmList.append(SynthesizedModel(metadata, multiprocess=False, *params))
+            elif gm == 'SynthesizedDPModel':
+                for params in paramsList:
+                    gmList.append(SynthesizedDPModel(metadata, multiprocess=False, *params))
+            elif gm == 'IndependentHistogram':
                 for params in paramsList:
                     gmList.append(IndependentHistogram(metadata, *params))
             elif gm == 'BayesianNet':
@@ -91,9 +97,9 @@ def main():
             elif gm == 'CTGAN':
                 for params in paramsList:
                     gmList.append(CTGAN(metadata, *params))
-            elif gm == 'PATEGAN':
-                for params in paramsList:
-                    gmList.append(PATEGAN(metadata, *params))
+            # elif gm == 'PATEGAN':
+            #     for params in paramsList:
+            #         gmList.append(PATEGAN(metadata, *params))
             else:
                 raise ValueError(f'Unknown GM {gm}')
 
