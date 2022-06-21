@@ -17,6 +17,7 @@ from utils.logging import LOGGER
 
 from synthesized import HighDimSynthesizer, MetaExtractor
 from synthesized.config import HighDimConfig
+from synthesized.metadata.value.categorical import String
 
 
 class SynthesizedModel(GenerativeModel):
@@ -42,7 +43,12 @@ class SynthesizedModel(GenerativeModel):
             self.meta = None
             self.model = None
 
-        self.meta = MetaExtractor.extract(data)
+        # Add a clause for type overrides for specific column types in the test data
+        type_overrides = []
+        if "PAT_AGE" in data:
+            type_overrides.append(String(name="PAT_AGE"))
+
+        self.meta = MetaExtractor.extract(data, type_overrides=type_overrides)
         self.model = HighDimSynthesizer(self.meta)
         self.model.learn(data)
 
