@@ -112,12 +112,17 @@ class SynthesizedDPModel(GenerativeModel):
             self.meta = None
             self.model = None
 
+        # Add a clause for type overrides for specific column types in the test data
+        type_overrides = []
+        if "PAT_AGE" in data:
+            type_overrides.append(String(name="PAT_AGE"))
+
         config = HighDimConfig()
         config.differential_privacy = True
         config.epsilon = 1.0
         config.delta = 1.0/(len(data)*2)
 
-        self.meta = MetaExtractor.extract(data)
+        self.meta = MetaExtractor.extract(data, type_overrides=type_overrides)
         self.model = HighDimSynthesizer(self.meta, config=config)
         self.model.learn(data)
 
